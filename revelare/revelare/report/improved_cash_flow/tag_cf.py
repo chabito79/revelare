@@ -59,13 +59,22 @@ def get_tag_based_data(company, user_tags, period_list, accumulated_values):
 	return data
 
 def account_types(unique_account_list):
-	""" """
-	list_of_dict = [
-		{"account_type": "Parangaricutirimicuaro", "label": _("Depre")},
-		{"account_type": "Receivable", "label": _("Net Change in Accounts Receivable")},
-		{"account_type": "Payable", "label": _("Net Change in Accounts Payable")},
-		{"account_type": "Stock", "label": _("Net Change in Inventory")}
-	]
+	"""crea diccionario con nombres de filas unicos"""
+	list_of_dict = []
+	for each in unique_account_list:
+		# create the dict
+		thisdict =	{}
+		thisdict["account_type"] = each
+		thisdict["label"] = _(each)
+
+		# append to list_of dict
+		list_of_dict.append(thisdict)
+	# list_of_dict = [
+	# 	{"account_type": "Parangaricutirimicuaro", "label": _("Depre")},
+	# 	{"account_type": "Receivable", "label": _("Net Change in Accounts Receivable")},
+	# 	{"account_type": "Payable", "label": _("Net Change in Accounts Payable")},
+	# 	{"account_type": "Stock", "label": _("Net Change in Inventory")}
+	# ]
 	return list_of_dict #list de diccionarios con N accounts para cada N rows
 
 
