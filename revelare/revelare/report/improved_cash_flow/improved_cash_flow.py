@@ -18,6 +18,7 @@ def execute(filters=None):
 	period_list = get_period_list(filters.from_fiscal_year, filters.to_fiscal_year, 
 		filters.periodicity, filters.accumulated_values, filters.company)
 
+	# This object gets the accounts that will be inserted in the Cash Flow
 	cash_flow_accounts = get_cash_flow_accounts()
 
 	# compute net profit / loss
@@ -62,10 +63,10 @@ def execute(filters=None):
 			})
 			data.append(account_data)
 			section_data.append(account_data)
-
+		# Adds each column's data to the right for a superperiod result.
 		add_total_row_account(data, section_data, cash_flow_account['section_footer'], 
 			period_list, company_currency)
-
+	# Adds each column's total amount at the bottom to the right for a superperiod result.
 	add_total_row_account(data, data, _("Net Change in Cash"), period_list, company_currency)
 	columns = get_columns(filters.periodicity, period_list, filters.accumulated_values, filters.company)
 
@@ -73,19 +74,22 @@ def execute(filters=None):
 
 def get_cash_flow_accounts():
 	operation_accounts = {
-		"section_name": "Operations",
-		"section_footer": _("Net Cash from Operations"),
-		"section_header": _("Cash Flow from Operations"),
+		"section_name": "Operaciones 001",
+		"section_footer": _("001-0-Net Cash from Operations"),
+		"section_header": _("001-1-Cash Flow from Operations"),
 		"account_types": [
+			# 
 			{"account_type": "Depreciation", "label": _("Depreciation")},
 			{"account_type": "Receivable", "label": _("Net Change in Accounts Receivable")},
 			{"account_type": "Payable", "label": _("Net Change in Accounts Payable")},
 			{"account_type": "Stock", "label": _("Net Change in Inventory")}
+			# 			{"account_type": "Income Tax", "label": _("Net Change in Income Tax")}
+			# 			{"account_type": "Sales Tax", "label": _("Net Change in Sales Tax")}
 		]
 	}
 
 	investing_accounts = {
-		"section_name": "Investing",
+		"section_name": "Inversiones 002",
 		"section_footer": _("Net Cash from Investing"),
 		"section_header": _("Cash Flow from Investing"),
 		"account_types": [
@@ -94,7 +98,7 @@ def get_cash_flow_accounts():
 	}
 
 	financing_accounts = {
-		"section_name": "Financing",
+		"section_name": "Financiamiento 003",
 		"section_footer": _("Net Cash from Financing"),
 		"section_header": _("Cash Flow from Financing"),
 		"account_types": [
