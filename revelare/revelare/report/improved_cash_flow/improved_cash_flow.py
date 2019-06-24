@@ -8,6 +8,7 @@ from frappe.utils import cint
 from erpnext.accounts.report.financial_statements import (get_period_list, get_columns, get_data)
 from erpnext.accounts.report.profit_and_loss_statement.profit_and_loss_statement import get_net_profit_loss
 from erpnext.accounts.utils import get_fiscal_year
+from tag_cf import (get_cash_flow_accounts, data_query)
 
 
 def execute(filters=None):
@@ -18,8 +19,10 @@ def execute(filters=None):
 	period_list = get_period_list(filters.from_fiscal_year, filters.to_fiscal_year, 
 		filters.periodicity, filters.accumulated_values, filters.company)
 
-	# This object gets the accounts that will be inserted in the Cash Flow
-	cash_flow_accounts = get_cash_flow_accounts()
+	# We find the unique row names that will be used based on the tags the user added
+	accounts_from_tags = data_query()
+	# This object gets the accounts that will be inserted in the Cash Flow. We pass the data_query results returned in order.
+	cash_flow_accounts = get_cash_flow_accounts(accounts_from_tags[0],accounts_from_tags[1],accounts_from_tags[2])
 
 	# compute net profit / loss
 	income = get_data(filters.company, "Income", "Credit", period_list, filters=filters,
@@ -69,14 +72,16 @@ def execute(filters=None):
 	# Adds each column's total amount at the bottom to the right for a superperiod result.
 	add_total_row_account(data, data, _("Net Change in Cash"), period_list, company_currency)
 	columns = get_columns(filters.periodicity, period_list, filters.accumulated_values, filters.company)
+	
+	frappe.msgprint(_(str(data_query())))
 
 	return columns, data
 
-def get_cash_flow_accounts():
+def get_cash_flow_accounts_001():
 	operation_accounts = {
-		"section_name": "Operaciones 001",
-		"section_footer": _("001-0-Net Cash from Operations"),
-		"section_header": _("001-1-Cash Flow from Operations"),
+		"section_name": "Operaciones",
+		"section_footer": _("Net Cash from Operations"),
+		"section_header": _("Cash Flow from Operations"),
 		"account_types": [
 			# 
 			{"account_type": "Depreciation", "label": _("Depreciation")},
@@ -89,7 +94,7 @@ def get_cash_flow_accounts():
 	}
 
 	investing_accounts = {
-		"section_name": "Inversiones 002",
+		"section_name": "Inversiones",
 		"section_footer": _("Net Cash from Investing"),
 		"section_header": _("Cash Flow from Investing"),
 		"account_types": [
@@ -98,7 +103,7 @@ def get_cash_flow_accounts():
 	}
 
 	financing_accounts = {
-		"section_name": "Financiamiento 003",
+		"section_name": "Financiamiento",
 		"section_footer": _("Net Cash from Financing"),
 		"section_header": _("Cash Flow from Financing"),
 		"account_types": [
@@ -125,6 +130,7 @@ def get_account_type_based_data(company, account_type, period_list, accumulated_
 	data["total"] = total
 	return data
 
+
 def get_account_type_based_gl_data(company, start_date, end_date, account_type):
 	gl_sum = frappe.db.sql_list("""
 		select sum(credit) - sum(debit)
@@ -135,6 +141,7 @@ def get_account_type_based_gl_data(company, start_date, end_date, account_type):
 	""", (company, start_date, end_date, account_type))
 
 	return gl_sum[0] if gl_sum and gl_sum[0] else 0
+
 
 def get_start_date(period, accumulated_values, company):
 	if not accumulated_values and period.get('from_date'):
