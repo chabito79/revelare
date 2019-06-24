@@ -8,6 +8,13 @@ def get_data():
 			"label": _("Cash Flow"),
 			"items": [
 				{
+					"type": "report",
+					"name": "Improved Cash Flow",
+					"doctype": "Revelare",
+					"is_query_report": True,
+					"description": _("Cash Flow Statement - Tagged Accounts")
+				},
+				{
 					"type": "doctype",
 					"name": "Budgeted Cash Flow",
 					"description": _("Entries budgeted cash flow.")

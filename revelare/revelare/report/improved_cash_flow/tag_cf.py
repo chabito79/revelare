@@ -59,6 +59,7 @@ def get_tag_based_data(company, user_tags, period_list, accumulated_values):
 	return data
 
 def account_types(unique_account_list):
+	""" """
 	list_of_dict = [
 		{"account_type": "Parangaricutirimicuaro", "label": _("Depre")},
 		{"account_type": "Receivable", "label": _("Net Change in Accounts Receivable")},

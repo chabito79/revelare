@@ -130,7 +130,6 @@ def get_account_type_based_data(company, account_type, period_list, accumulated_
 	data["total"] = total
 	return data
 
-
 def get_account_type_based_gl_data(company, start_date, end_date, account_type):
 	gl_sum = frappe.db.sql_list("""
 		select sum(credit) - sum(debit)

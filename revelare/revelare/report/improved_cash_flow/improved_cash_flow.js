@@ -15,7 +15,7 @@ frappe.require("assets/erpnext/js/financial_statements.js", function() {
 	frappe.query_reports["Improved Cash Flow"]["filters"].pop();
 
 	// Finds the array position of the periodicity filter object so it can be spliced or removed.
-	const remove_position = frappe.query_reports["Improved Cash Flow"]["filters"].indexOf(frappe.query_reports["Improved Cash Flow"]["filters"].find(fruit => fruit.fieldname === 'periodicity'))
+	const remove_position = frappe.query_reports["Improved Cash Flow"]["filters"].indexOf(frappe.query_reports["Improved Cash Flow"]["filters"].find(filter_object => filter_object.fieldname === 'periodicity'))
 	// Removes the periodicity filter object to prepare for replacement with Monthly default.
 	frappe.query_reports["Improved Cash Flow"]["filters"].splice(remove_position,1);
 	
