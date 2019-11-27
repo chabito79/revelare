@@ -1,0 +1,30 @@
+{
+ "add_total_row": 0,
+ "creation": "2019-11-27 14:10:20.445676",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2019-11-27 15:17:01.369293",
+ "modified_by": "Administrator",
+ "module": "Revelare",
+ "name": "Direct Cash Flow Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Budgeted Cash Flow",
+ "report_name": "Direct Cash Flow Report",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Administrator"
+  }
+ ]
+}
