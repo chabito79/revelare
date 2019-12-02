@@ -170,7 +170,8 @@ def get_columns(filters):
 	return columns
 
 def get_period_date_ranges(filters):
-	'''Returns the date range according to the initial and final dates'''
+	'''Returns a list of a list of each periods start and end dates based on the initial and final dates. Each sublist
+	is a datetime object with the start date for the period and end date for the period.'''
 	# Relativedelta - for datetime calculations
 	from dateutil.relativedelta import relativedelta
 	from_date, to_date = getdate(filters.from_date), getdate(filters.to_date)
