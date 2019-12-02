@@ -306,5 +306,19 @@
   "source_name": "Dec",
   "status": "Saved",
   "target_name": "Dic"
+ },
+ {
+  "contributed_translation_doctype_name": null,
+  "docstatus": 0,
+  "doctype": "Translation",
+  "language": "es",
+  "modified": "2019-12-02 00:24:36.607720",
+  "name": "449eab816b",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "source_name": "Quarter",
+  "status": "Saved",
+  "target_name": "Trimestre"
  }
 ]

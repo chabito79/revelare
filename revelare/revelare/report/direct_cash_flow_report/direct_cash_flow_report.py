@@ -33,10 +33,10 @@ def execute(filters=None):
 	dev_from_date, dev_to_date = getdate(filters.from_date), getdate(filters.to_date)
 	# DEV Write the file to see what we are getting.
 	# write_file(dev_from_date, 'develop_filters')
-	write_file(get_period_date_ranges(filters), 'develop_date_ranges')
+	#write_file(get_period_date_ranges(filters), 'develop_date_ranges')
 	
 	columns = get_columns(filters)
-	write_file(columns, 'develop_columns')
+	#write_file(columns, 'develop_columns')
 
 	data = [{
 		"total": 0,
@@ -82,8 +82,8 @@ def get_payment_entries():
 	payment_entry_received = frappe.db.sql("""SELECT posting_date, received_amount, paid_from_account_currency FROM `tabPayment Entry` WHERE payment_type = 'Receive'""", as_dict=True)
 	# We get payment entries of payments made.
 	payment_entry_paid = frappe.db.sql("""SELECT posting_date, paid_amount, paid_to_account_currency FROM `tabPayment Entry` WHERE payment_type = 'Pay'""", as_dict=True)
-	write_file(payment_entry_received, 'develop_payment_entry_received')
-	write_file(payment_entry_paid, 'develop_payment_entry_paid')
+	# write_file(payment_entry_received, 'develop_payment_entry_received')
+	# write_file(payment_entry_paid, 'develop_payment_entry_paid')
 	return payment_entry_received, payment_entry_paid
 
 def get_journal_entries():
@@ -95,7 +95,7 @@ def get_journal_entries():
 	journal_entry_accounts = frappe.db.sql("""SELECT parent, account_type, account, account_currency, debit_in_account_currency, credit_in_account_currency FROM `tabJournal Entry Account` WHERE account_type = 'Bank' OR account_type = 'Cash'""", as_dict=True)
 	
 	# For development and debugging: Save contents of data obtained to a file.
-	write_file(journal_entry_accounts, 'develop_journal_entry_accounts')
+	# write_file(journal_entry_accounts, 'develop_journal_entry_accounts')
 	'''
 	parent
 	# To keep track of which journal entry is the parent, so date of journaling can be found.
@@ -187,6 +187,7 @@ def get_period_date_ranges(filters):
 	# We create an empty list to hold the periodic date ranges, once filled up it will be returned.
 	periodic_daterange = []
 	# using range allows for specific amounts of looping. the first number is the start parameter:  1 (not 0). 53 is the ending value. Increment is the interval by which the loop should increment.  These are dummy variables.
+	# TODO  FIXME  Something iffy about this one, when calculating years it does not go beyond 5.  This is the problem, a year means a 12 month increment. from one to 53 it only increments 4.41 times!!  FIXME FIXME FIXME
 	for dummy in range(1, 53, increment):
 		if filters.range == "Weekly":
 			# when entering the loop for the first time, from date contains user declared from date. On subsequent iterations, it is now the period end date + 1 day, so the new period of dates is calculated.  In this case, the next week.
@@ -211,19 +212,27 @@ def get_period_date_ranges(filters):
 	return periodic_daterange
 
 def get_period(posting_date, filters):
-	'''Returns the period based on the report filter. This gives the titles to the columns headers in the report.'''
+	'''Returns the period name based on the report filter. This gives the titles to the columns headers in the report.'''
 
-	months = [_("Jan"), _("Feb"), _("Mar"), _("Apr"), _("May"), _("Jun"), _("Jul"), _("Aug"), _("Sep"), _("Oct"), _("Nov"), _("Dec")
+	months = [_("Jan"), _("Feb"), _("Mar"), _("Apr"), _("May"), _("Jun"), _("Jul"), _("Aug"), _("Sep"), _("Oct"), _("Nov"), _("Dec")]
 
 	if filters.range == 'Weekly':
+		# https://pythontic.com/datetime/datetime/isocalendar
 		period = _("Week") + " " + str(posting_date.isocalendar()[1]) + " " + str(posting_date.year)
 	elif filters.range == 'Monthly':
 		period = str(months[posting_date.month - 1]) + " " + str(posting_date.year)
 	elif filters.range == 'Quarterly':
-		period = "Quarter " + str(((posting_date.month-1)//3)+1) +" " + str(posting_date.year)
+		period = _("Quarter") + " " + str(((posting_date.month-1)//3)+1) +" " + str(posting_date.year)
+	# Adding the yearly period estimator, so more years can be selected as time periods!
+	elif filters.range == 'Yearly':
+		period = str(posting_date.year)
 	else:
+		# Returns a tuple with the Year, a datetime object for start of fiscal period, a datetime object for end of fiscal year.
+		# NOTE: If above elif enters here, and many years are entered, it fails to render because obtaining the fiscal year for multiple years fails. This Left here for legacy.
 		year = get_fiscal_year(posting_date, company=filters.company)
-		period = str(year[2])
+		# write_file(year, 'develop_year')
+		# Just getting the year from the tuple, to show on the columns.
+		period = str(year[0])
 
 	return period
 
