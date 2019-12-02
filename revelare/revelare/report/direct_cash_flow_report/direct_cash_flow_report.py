@@ -171,7 +171,7 @@ def get_columns(filters):
 
 def get_period_date_ranges(filters):
 	'''Returns a list of a list of each periods start and end dates based on the initial and final dates. Each sublist
-	is a datetime object with the start date for the period and end date for the period.'''
+	is a datetime object with the start date for the period and end date for the '''
 	# Relativedelta - for datetime calculations
 	from dateutil.relativedelta import relativedelta
 	from_date, to_date = getdate(filters.from_date), getdate(filters.to_date)
@@ -211,12 +211,12 @@ def get_period_date_ranges(filters):
 	return periodic_daterange
 
 def get_period(posting_date, filters):
-	'''Returns the period based on the report filter'''
+	'''Returns the period based on the report filter. This gives the titles to the columns headers in the report.'''
 
-	months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+	months = [_("Jan"), _("Feb"), _("Mar"), _("Apr"), _("May"), _("Jun"), _("Jul"), _("Aug"), _("Sep"), _("Oct"), _("Nov"), _("Dec")
 
 	if filters.range == 'Weekly':
-		period = "Week " + str(posting_date.isocalendar()[1]) + " " + str(posting_date.year)
+		period = _("Week") + " " + str(posting_date.isocalendar()[1]) + " " + str(posting_date.year)
 	elif filters.range == 'Monthly':
 		period = str(months[posting_date.month - 1]) + " " + str(posting_date.year)
 	elif filters.range == 'Quarterly':
